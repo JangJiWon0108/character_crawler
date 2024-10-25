@@ -1,6 +1,11 @@
 # wrtn-character-crawler
 뤼튼 캐릭터 크롤러
----
+
+## Notion 링크 (구동영상 포함)
+[https://loving-maple-4c3.notion.site/_DE_-_-129943b20a9080aa9a93c6bfcb6c676c?pvs=4](https://loving-maple-4c3.notion.site/_DE_-_-129943b20a9080aa9a93c6bfcb6c676c?pvs=4)
+
+<br>
+
 ## 1. 크롤링 수행  
 
 - yaml파일에서 정의한 profile인 crawling 을 실행합니다. -> 크롤링 수행
@@ -8,7 +13,7 @@
 ```
 docker compose --profile crawling up
 ```
----
+
 ## 2. Sqlite Export 
 
 - DB 서비스를 실행합니다.
@@ -30,7 +35,6 @@ pip3 install mysql-to-sqlite3
 ```
 mysql2sqlite -f out.db -d wrtn_db -u DB유저 -p -P 9876
 ```
----
 ## 3. CSV 생성
 - csv파일 2개 생성합니다. (sqlite 익스포트가 선행되어야 합니다.)
     - character_data.csv
@@ -38,7 +42,7 @@ mysql2sqlite -f out.db -d wrtn_db -u DB유저 -p -P 9876
 ```
 python3 create_csv.py
 ```
----
+
 ## 테스트 (로컬에서 수행됩니다. 도커 X)
 - 프로젝트 의존성을 설치합니다.
 - Playwright, Chromium 를 설치합니다.
