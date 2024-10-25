@@ -1,0 +1,48 @@
+# 2개의 서비스 (크롤러, 데이터베이스)
+services:
+  # 크롤러 서비스
+  crawler:
+    build:
+      context: .
+      dockerfile: Dockerfile  # 도커파일을 빌드함
+
+    # 의존성 정의 - crawler 서비스는 database 서비스에 의존 (crawler가 시작되기 전, database가 시작)
+    depends_on:
+      database:
+        condition: service_healthy
+
+    # 환경변수 .env 파일에서 받아옴
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    
+    # 크롤링과 관련된 서비스임을 표시
+    profiles: [crawling] 
+
+  # 데이터베이스 서비스
+  database:
+    image: mysql:latest
+    restart: unless-stopped
+
+    # 환경변수 (생성할 db이름, 유저, 비밀번호, 루트 비밀번호)
+    environment:
+      - MYSQL_DATABASE=wrtn_db                  
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+
+    # 호스트의 9876 포트를 컨테이너의 3306 포트에 매핑 
+    ports:
+      - "9876:3306"
+
+    # 저장 디렉토리
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+    # 점검
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}", "ping", "-h", "127.0.0.1"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 10
